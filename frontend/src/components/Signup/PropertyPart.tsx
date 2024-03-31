@@ -1,28 +1,35 @@
 import { useState } from "react"
 import Input from "../atoms/Input/Input"
+import { PropertyFormData } from "../../interfaces";
 
 
-function PropertyPart() {
-  const [license,setLicense] = useState<string|null>(null)
-  const handleLicenseImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]; // Get the first file from the selected files
-    if (file) {
-        const imageUrl = URL.createObjectURL(file); // Create URL for the selected file
-        setLicense(imageUrl); // Set the selected image URL
-    }
-};
+interface PropertyPartProps {
+  setPropertyFormData: React.Dispatch<React.SetStateAction<PropertyFormData>>;
+}
 
-const [profile,setProfile] = useState<string|null>(null)
-const handleProfileImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  const file = event.target.files?.[0]; // Get the first file from the selected files
-  if (file) {
-      const imageUrl = URL.createObjectURL(file); // Create URL for the selected file
-      setProfile(imageUrl); // Set the selected image URL
-  }
-};
+const  PropertyPart : React.FC<PropertyPartProps>=({setPropertyFormData})=> {
 
-
+  const [licensePreview,setLicensePreview] = useState<string|null>(null)
+  const [profilePreview,setProfilePreview] = useState<string|null>(null)
   const [typeOfStays,setTypeOfStays] = useState<string[]>([''])
+  const [speciality,setSpeciality] = useState<string[]>([''])
+
+
+  const handlePropertyChange = (e :React.ChangeEvent<HTMLInputElement>) =>{
+      setPropertyFormData((previous)=>({
+        ...previous,
+        [e.target.name] : e.target.files ? e.target.files[0] : e.target.value
+      }))
+      const file = e.target.files?.[0]; 
+      if (file) {
+          const imageUrl = URL.createObjectURL(file); 
+          e.target.name === 'license' ?
+          setLicensePreview(imageUrl) : 
+          setProfilePreview(imageUrl)
+      }
+  }
+
+
   const handleAddStay = ()=>{
     setTypeOfStays(previous => [...previous,''])
   }
@@ -33,10 +40,14 @@ const handleProfileImageChange = (event: React.ChangeEvent<HTMLInputElement>) =>
       const updatedStay = [...typeOfStays]
       updatedStay[index] = value
       setTypeOfStays(updatedStay)
+      setPropertyFormData(previous =>({
+        ...previous,
+        TypeOfStay : [...updatedStay]
+      }))
   }
 
 
-  const [speciality,setSpeciality] = useState<string[]>([''])
+  
   const handleAddSpeciality = ()=>{
     setSpeciality(previous => [...previous,''])
   }
@@ -47,24 +58,30 @@ const handleProfileImageChange = (event: React.ChangeEvent<HTMLInputElement>) =>
       const updatedSpeciality = [...speciality]
       updatedSpeciality[index] = value
       setSpeciality(updatedSpeciality)
+      setPropertyFormData(previous =>({
+        ...previous,
+        Speciality : [...updatedSpeciality]
+      }))
   }
 
 
   return (
     <div>
-            <Input type={'text'} title={'Property Name'} name={'Property Name'} id={'Property Name'} placeholder={'Enter The Property Name'} />
-            <Input type={'email'} title={'Email'} name={'email'} id={'email'}  placeholder={'Enter Your Email'} />
-            <Input type={'password'} title={'Password'} name={'password'} id={'password'}  placeholder={'Enter Your New Password'}/>
-            <Input type={'password'} title={'Confirm Password'} name={'confirmPassword'} id={'confirmPassword'}  placeholder={'Confirm Your Password'} />
-            <Input type={'text'} title={'Address'} name={'Address'} id={'Address'}  placeholder={'Enter Your Address'} height="70px"/>
-            <Input type={'date'} title={'Started Date'} name={'startedDate'} id={'startedDate'}  />
+            <Input onChange={handlePropertyChange}  type={'text'} title={'Property Name'} name={'PropertyName'} id={'PropertyName'} placeholder={'Enter The Property Name'} />
+            <Input onChange={handlePropertyChange} type={'email'} title={'Email'} name={'email'} id={'email'}  placeholder={'Enter Your Email'} />
+            <Input onChange={handlePropertyChange} type={'password'} title={'Password'} name={'password'} id={'password'}  placeholder={'Enter Your New Password'}/>
+            <Input onChange={handlePropertyChange} type={'password'} title={'Confirm Password'} name={'confirmPassword'} id={'confirmPassword'}  placeholder={'Confirm Your Password'} />
+            <Input onChange={handlePropertyChange} type={'text'} title={'Address'} name={'Address'} id={'Address'}  placeholder={'Enter Your Address'} height="70px"/>
+            <Input onChange={handlePropertyChange} type={'date'} title={'Started Date'} name={'startedDate'} id={'startedDate'}  />
+            <Input onChange={handlePropertyChange} type={'string'} title={'Mobile Number'} name={'MobileNumber'} id={'MobileNumber'}  />
            
             <div className="TypesOfStay border-y ">
                 {
               typeOfStays.map((stay,index)=>(
-                <div className="flex items-center">
+                <div  key={index} className="flex items-center">
                   <div className='flex-1 w-80'>
                   <Input 
+                    
                     type={'text'}
                     title={`Type of stay ${index +1}`}
                     name={`TypeOfStay${index}`}
@@ -96,7 +113,7 @@ const handleProfileImageChange = (event: React.ChangeEvent<HTMLInputElement>) =>
             <div className="YourSpecialities border-b">
               {
               speciality.map((stay,index)=>(
-                <div className="flex items-center">
+                <div  key={index} className="flex items-center">
                   <div className='flex-1 w-80'>
                   <Input 
                     type={'text'}
@@ -137,10 +154,10 @@ const handleProfileImageChange = (event: React.ChangeEvent<HTMLInputElement>) =>
                     
                         placeholder={'Enter Your Mobile Number '}
                         multiple={false}
-                        onChange={handleLicenseImageChange} 
+                        onChange={handlePropertyChange} 
                     />
-                    {license && <img src={license} alt="" style={{ marginLeft:'10px',marginTop:'10px',borderRadius:'5px',width: '30%', height: 'auto', maxHeight: '60px' }}  />}
-                    {!license &&<div className='flex items-center justify-center'  style={{ marginLeft:'10px',marginTop:'10px',borderRadius:'5px',width: '30%', height: '60px', maxHeight: '60px', backgroundColor:'white'}} >
+                    {licensePreview && <img src={licensePreview} alt="" style={{ marginLeft:'10px',marginTop:'10px',borderRadius:'5px',width: '30%', height: 'auto', maxHeight: '60px' }}  />}
+                    {!licensePreview &&<div className='flex items-center justify-center'  style={{ marginLeft:'10px',marginTop:'10px',borderRadius:'5px',width: '30%', height: '60px', maxHeight: '60px', backgroundColor:'white'}} >
                     <i className="fa-solid fa-file" style={{fontSize:'40px'}}></i>
                     </div>}
                     
@@ -149,16 +166,16 @@ const handleProfileImageChange = (event: React.ChangeEvent<HTMLInputElement>) =>
                 <Input
                         type={'file'}
                         title={'Profile'}
-                        name={'Profile'}
+                        name={'PropertyProfile'}
                         id={'Profile'}
                         height='60px'
                     
                         placeholder={'Enter Your Mobile Number '}
                         multiple={false}
-                        onChange={handleProfileImageChange} 
+                        onChange={handlePropertyChange} 
                     />
-                    {profile && <img src={profile} alt="" style={{ marginLeft:'10px',marginTop:'10px',borderRadius:'5px',width: '30%', height: 'auto', maxHeight: '60px' }}  />}
-                    {!profile &&<div className='flex items-center justify-center'  style={{ marginLeft:'10px',marginTop:'10px',borderRadius:'5px',width: '30%', height: '60px', maxHeight: '60px', backgroundColor:'white'}} >
+                    {profilePreview && <img src={profilePreview} alt="" style={{ marginLeft:'10px',marginTop:'10px',borderRadius:'5px',width: '30%', height: 'auto', maxHeight: '60px' }}  />}
+                    {!profilePreview &&<div className='flex items-center justify-center'  style={{ marginLeft:'10px',marginTop:'10px',borderRadius:'5px',width: '30%', height: '60px', maxHeight: '60px', backgroundColor:'white'}} >
                     <i className="fa-solid fa-house" style={{fontSize:'40px'}}></i>
                     </div>}
                     

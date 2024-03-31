@@ -3,7 +3,7 @@ interface Props{
     title?:string;
     type:string;
     value?:string;
-    name:string;
+    name ?:string;
     id?:string;
     width?:string
     placeholder?:string;
@@ -15,7 +15,7 @@ const Input : React.FC<Props>=(props) =>{
   return (
     <div className='flex flex-col'>
         <label className='label ' htmlFor="userName">{props.title}</label>
-        <input
+        <input      
                     className='input w-full'
                     placeholder={props.placeholder}
                     type={props.type}

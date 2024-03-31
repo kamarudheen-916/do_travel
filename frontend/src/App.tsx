@@ -3,6 +3,7 @@ import Login from './components/Login/Login'
 import Signup from './components/Signup/Signup'
 import ForgottenPassword from './components/ForgottenPassword/Forgotten'
 import Otp from './components/Otp/Otp'
+import Home from './components/Home/Home'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path='/forgottenPassword' element={<ForgottenPassword/>}/>
         <Route path='/signup' element={ <Signup/>}/>
         <Route path='/otp' element={<Otp/>} />
+        <Route path='/' element={<Home/>} />
       </Routes>
     </Router>
     </>
